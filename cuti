@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Aplikasi Pengajuan Cuti</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f5f6fa; }
+    h2 { text-align: center; }
+    form, .dashboard { max-width: 600px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    input, textarea { width: 100%; margin: 8px 0; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+    button { background: #3498db; color: white; padding: 10px; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #2980b9; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background: #3498db; color: white; }
+  </style>
+</head>
+<body>
+  <h2>Form Pengajuan Cuti</h2>
+  <form id="cutiForm">
+    <label>Nama:</label>
+    <input type="text" id="nama" required>
+    <label>Tanggal Mulai:</label>
+    <input type="date" id="mulai" required>
+    <label>Tanggal Selesai:</label>
+    <input type="date" id="selesai" required>
+    <label>Alasan:</label>
+    <textarea id="alasan" required></textarea>
+    <button type="submit">Kirim</button>
+  </form>
+
+  <div class="dashboard">
+    <h3>Dashboard Pengajuan Cuti</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Nama</th>
+          <th>Tgl Mulai</th>
+          <th>Tgl Selesai</th>
+          <th>Alasan</th>
+        </tr>
+      </thead>
+      <tbody id="dataCuti"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById('cutiForm');
+    const dataCuti = document.getElementById('dataCuti');
+
+    function loadData() {
+      dataCuti.innerHTML = "";
+      const cutiList = JSON.parse(localStorage.getItem("cutiData")) || [];
+      cutiList.forEach(item => {
+        const row = `<tr>
+          <td>${item.nama}</td>
+          <td>${item.mulai}</td>
+          <td>${item.selesai}</td>
+          <td>${item.alasan}</td>
+        </tr>`;
+        dataCuti.innerHTML += row;
+      });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const cuti = {
+        nama: document.getElementById('nama').value,
+        mulai: document.getElementById('mulai').value,
+        selesai: document.getElementById('selesai').value,
+        alasan: document.getElementById('alasan').value
+      };
+      const cutiList = JSON.parse(localStorage.getItem("cutiData")) || [];
+      cutiList.push(cuti);
+      localStorage.setItem("cutiData", JSON.stringify(cutiList));
+      loadData();
+      form.reset();
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
